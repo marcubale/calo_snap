@@ -1,0 +1,17 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        options:
+          # Ensures json_serializable integration works smoothly
+          use_build_context: false
+
+      json_serializable:
+        options:
+          explicit_to_json: true
+          create_to_json: true
+
+      isar_generator:
+        options:
+          # Optional, but useful
+          generate_query_extensions: true
