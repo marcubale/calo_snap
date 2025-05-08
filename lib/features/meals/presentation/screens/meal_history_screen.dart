@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -102,15 +102,14 @@ class _MealHistoryScreenState extends ConsumerState<MealHistoryScreen> {
                                       vertical: 8,
                                     ),
                                     leading:
-                                        meal.imagePath != null
+                                        meal.imagePath_base64 != null
                                             ? ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(8),
                                               child: Image.memory(
-                                                Uint8List.fromList(
-                                                  meal.imagePath!.codeUnits,
+                                                base64Decode(
+                                                  meal.imagePath_base64!,
                                                 ),
-
                                                 width: 50,
                                                 height: 50,
                                                 fit: BoxFit.cover,
@@ -186,11 +185,11 @@ class _MealHistoryScreenState extends ConsumerState<MealHistoryScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                if (meal.imagePath != null)
+                if (meal.imagePath_base64 != null)
                   ClipRRect(
                     borderRadius: BorderRadius.circular(24),
                     child: Image.memory(
-                      Uint8List.fromList(meal.imagePath!.codeUnits),
+                      base64Decode(meal.imagePath_base64!),
                       height: 200,
                       fit: BoxFit.cover,
                     ),

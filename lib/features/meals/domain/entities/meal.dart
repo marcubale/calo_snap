@@ -11,7 +11,7 @@ class MealIsar {
   late String name;
   late double calories;
   late DateTime dateTime;
-  String? imagePath;
+  String? imagePath_base64;
 
   MealIsar();
 
@@ -19,13 +19,13 @@ class MealIsar {
     : name = meal.name,
       calories = meal.calories,
       dateTime = meal.dateTime,
-      imagePath = meal.imagePath;
+      imagePath_base64 = meal.imagePath_base64;
 
   Meal toMeal() => Meal(
     name: name,
     calories: calories,
     dateTime: dateTime,
-    imagePath: imagePath,
+    imagePath_base64: imagePath_base64,
   );
 }
 
@@ -35,7 +35,7 @@ class Meal with _$Meal {
     required String name,
     required double calories,
     required DateTime dateTime,
-    String? imagePath,
+    String? imagePath_base64,
   }) = _Meal;
 
   factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);

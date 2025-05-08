@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:calo_snap/core/services/fake_image_service.dart';
@@ -28,20 +29,23 @@ class _RecognizeFoodScreenState extends ConsumerState<RecognizeFoodScreen> {
     if (picked != null) {
       final bytes = await picked.readAsBytes();
       setState(() => _imageBytes = bytes);
-      // await ref.read(recognizeFoodViewModelProvider.notifier).recognize(bytes);
+
+      final localContext = context;
+
       meal = await ref
           .read(recognizeFoodViewModelProvider.notifier)
-          .recognizeAndPrepare(
-            bytes,
-            imagePath:
-                _imageBytes != null ? String.fromCharCodes(_imageBytes!) : null,
-          );
+          .recognizeAndPrepare(bytes);
+
+      if (localContext.mounted && meal != null) {
+        _showConfirmMealSheet(localContext, ref, meal!);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final result = ref.watch(recognizeFoodViewModelProvider);
+    final localContext = context;
 
     return Scaffold(
       appBar: AppBar(
@@ -78,16 +82,14 @@ class _RecognizeFoodScreenState extends ConsumerState<RecognizeFoodScreen> {
                     await ref
                         .read(fakeImageServiceProvider)
                         .loadDevImageBytes();
-                _imageBytes = bytes;
+                setState(() => _imageBytes = bytes);
+
                 meal = await ref
                     .read(recognizeFoodViewModelProvider.notifier)
-                    .recognizeAndPrepare(
-                      bytes!,
-                      imagePath:
-                          _imageBytes != null
-                              ? String.fromCharCodes(_imageBytes!)
-                              : null,
-                    );
+                    .recognizeAndPrepare(bytes!);
+                if (localContext.mounted && meal != null) {
+                  _showConfirmMealSheet(localContext, ref, meal!);
+                }
               },
               icon: const Icon(Icons.camera_alt, size: 36, color: Colors.red),
               label: const Text('Use Fake Image'),
@@ -143,15 +145,6 @@ class _RecognizeFoodScreenState extends ConsumerState<RecognizeFoodScreen> {
                 onPressed: () async {
                   final resultText = result.valueOrNull;
                   if (resultText != null && resultText.isNotEmpty) {
-                    // final meal = Meal(
-                    //   name: resultText,
-                    //   calories: 0, // Placeholder — we’ll add real data later
-                    //   dateTime: DateTime.now(),
-                    //   imagePath:
-                    //       _imageBytes != null
-                    //           ? String.fromCharCodes(_imageBytes!)
-                    //           : null,
-                    // );
                     if (meal != null) {
                       // Save the meal to the database
                       await ref
@@ -168,14 +161,6 @@ class _RecognizeFoodScreenState extends ConsumerState<RecognizeFoodScreen> {
                         const SnackBar(content: Text('No meal to save')),
                       );
                     }
-                    // await ref
-                    //     .read(saveMealViewModelProvider.notifier)
-                    //     .saveMeal(meal);
-                    // if (context.mounted) {
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     const SnackBar(content: Text('Meal saved!')),
-                    //   );
-                    // }
                   }
                 },
                 icon: const Icon(Icons.save),
@@ -190,4 +175,76 @@ class _RecognizeFoodScreenState extends ConsumerState<RecognizeFoodScreen> {
       ),
     );
   }
+}
+
+void _showConfirmMealSheet(BuildContext context, WidgetRef ref, Meal meal) {
+  final nameController = TextEditingController(text: meal.name);
+  final calController = TextEditingController(
+    text: meal.calories.toStringAsFixed(0),
+  );
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          top: 24,
+          left: 16,
+          right: 16,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (meal.imagePath_base64 != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.memory(
+                  base64Decode(meal.imagePath_base64!),
+                  height: 100,
+                  width: 100,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Food name'),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: calController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Calories'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () async {
+                final name = nameController.text.trim();
+                final calories =
+                    double.tryParse(calController.text.trim()) ?? 0;
+
+                final updatedMeal = meal.copyWith(
+                  name: name,
+                  calories: calories,
+                );
+                await ref
+                    .read(saveMealViewModelProvider.notifier)
+                    .saveMeal(updatedMeal);
+
+                if (context.mounted) Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.save),
+              label: const Text('Save Meal'),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      );
+    },
+  );
 }

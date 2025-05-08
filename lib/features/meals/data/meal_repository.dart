@@ -9,7 +9,7 @@ class MealRepository {
 
   MealRepository(this._isar);
 
-  /// This is also updating 
+  /// This is also updating
   Future<void> saveMeal(Meal meal) async {
     final mealIsar = MealIsar.fromMeal(meal);
     await _isar.writeTxn(() async {
@@ -21,13 +21,13 @@ class MealRepository {
     required String name,
     required double calories,
     required DateTime dateTime,
-    String? imagePath,
+    String? imagePathBase64,
   }) async {
     final meal = Meal(
       name: name,
       calories: calories,
       dateTime: dateTime,
-      imagePath: imagePath,
+      imagePath_base64: imagePathBase64,
     );
     await saveMeal(meal);
   }

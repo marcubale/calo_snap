@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:calo_snap/core/services/gemini_service.dart';
@@ -20,10 +21,7 @@ class RecognizeFoodViewModel extends AsyncNotifier<String?> {
     });
   }
 
-  Future<Meal?> recognizeAndPrepare(
-    Uint8List imageBytes, {
-    String? imagePath,
-  }) async {
+  Future<Meal?> recognizeAndPrepare(Uint8List imageBytes) async {
     state = const AsyncLoading();
     Meal? meal;
 
@@ -45,7 +43,7 @@ class RecognizeFoodViewModel extends AsyncNotifier<String?> {
         name: foodName,
         calories: calories,
         dateTime: DateTime.now(),
-        imagePath: imagePath,
+        imagePath_base64: base64Encode(imageBytes),
       );
 
       state = AsyncValue.data(foodName);

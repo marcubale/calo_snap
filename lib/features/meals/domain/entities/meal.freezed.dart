@@ -23,7 +23,7 @@ mixin _$Meal {
   String get name => throw _privateConstructorUsedError;
   double get calories => throw _privateConstructorUsedError;
   DateTime get dateTime => throw _privateConstructorUsedError;
-  String? get imagePath => throw _privateConstructorUsedError;
+  String? get imagePath_base64 => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,7 +36,10 @@ abstract class $MealCopyWith<$Res> {
       _$MealCopyWithImpl<$Res, Meal>;
   @useResult
   $Res call(
-      {String name, double calories, DateTime dateTime, String? imagePath});
+      {String name,
+      double calories,
+      DateTime dateTime,
+      String? imagePath_base64});
 }
 
 /// @nodoc
@@ -55,7 +58,7 @@ class _$MealCopyWithImpl<$Res, $Val extends Meal>
     Object? name = null,
     Object? calories = null,
     Object? dateTime = null,
-    Object? imagePath = freezed,
+    Object? imagePath_base64 = freezed,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -70,9 +73,9 @@ class _$MealCopyWithImpl<$Res, $Val extends Meal>
           ? _value.dateTime
           : dateTime // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      imagePath: freezed == imagePath
-          ? _value.imagePath
-          : imagePath // ignore: cast_nullable_to_non_nullable
+      imagePath_base64: freezed == imagePath_base64
+          ? _value.imagePath_base64
+          : imagePath_base64 // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
   }
@@ -86,7 +89,10 @@ abstract class _$$MealImplCopyWith<$Res> implements $MealCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String name, double calories, DateTime dateTime, String? imagePath});
+      {String name,
+      double calories,
+      DateTime dateTime,
+      String? imagePath_base64});
 }
 
 /// @nodoc
@@ -102,7 +108,7 @@ class __$$MealImplCopyWithImpl<$Res>
     Object? name = null,
     Object? calories = null,
     Object? dateTime = null,
-    Object? imagePath = freezed,
+    Object? imagePath_base64 = freezed,
   }) {
     return _then(_$MealImpl(
       name: null == name
@@ -117,9 +123,9 @@ class __$$MealImplCopyWithImpl<$Res>
           ? _value.dateTime
           : dateTime // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      imagePath: freezed == imagePath
-          ? _value.imagePath
-          : imagePath // ignore: cast_nullable_to_non_nullable
+      imagePath_base64: freezed == imagePath_base64
+          ? _value.imagePath_base64
+          : imagePath_base64 // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -132,7 +138,7 @@ class _$MealImpl implements _Meal {
       {required this.name,
       required this.calories,
       required this.dateTime,
-      this.imagePath});
+      this.imagePath_base64});
 
   factory _$MealImpl.fromJson(Map<String, dynamic> json) =>
       _$$MealImplFromJson(json);
@@ -144,11 +150,11 @@ class _$MealImpl implements _Meal {
   @override
   final DateTime dateTime;
   @override
-  final String? imagePath;
+  final String? imagePath_base64;
 
   @override
   String toString() {
-    return 'Meal(name: $name, calories: $calories, dateTime: $dateTime, imagePath: $imagePath)';
+    return 'Meal(name: $name, calories: $calories, dateTime: $dateTime, imagePath_base64: $imagePath_base64)';
   }
 
   @override
@@ -161,14 +167,14 @@ class _$MealImpl implements _Meal {
                 other.calories == calories) &&
             (identical(other.dateTime, dateTime) ||
                 other.dateTime == dateTime) &&
-            (identical(other.imagePath, imagePath) ||
-                other.imagePath == imagePath));
+            (identical(other.imagePath_base64, imagePath_base64) ||
+                other.imagePath_base64 == imagePath_base64));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, name, calories, dateTime, imagePath);
+      Object.hash(runtimeType, name, calories, dateTime, imagePath_base64);
 
   @JsonKey(ignore: true)
   @override
@@ -189,7 +195,7 @@ abstract class _Meal implements Meal {
       {required final String name,
       required final double calories,
       required final DateTime dateTime,
-      final String? imagePath}) = _$MealImpl;
+      final String? imagePath_base64}) = _$MealImpl;
 
   factory _Meal.fromJson(Map<String, dynamic> json) = _$MealImpl.fromJson;
 
@@ -200,7 +206,7 @@ abstract class _Meal implements Meal {
   @override
   DateTime get dateTime;
   @override
-  String? get imagePath;
+  String? get imagePath_base64;
   @override
   @JsonKey(ignore: true)
   _$$MealImplCopyWith<_$MealImpl> get copyWith =>
